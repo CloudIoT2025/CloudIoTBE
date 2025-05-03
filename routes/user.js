@@ -55,5 +55,19 @@ router.get('/weekly', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+// 라즈베리파이 아이디 확인
+router.post('/rsp/validate', async (req, res) => {
+  const { code } = req.body;
 
+  try {
+    // TODO: 라즈베리 파이 아이디 확인하는 부분
+    const rspId = "0"
+    const valid = rspId == code;
+
+    res.json({ valid });
+  } catch (err) {
+    console.error('라즈베리 코드 확인 오류:', err);
+    res.status(500).json({ error: '서버 오류' });
+  }
+});
 module.exports = router;
