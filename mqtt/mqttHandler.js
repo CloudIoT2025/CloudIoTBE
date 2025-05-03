@@ -39,7 +39,7 @@ function sendMqttMessage(topic, message) {
     const client = mqtt.connect(brokerUrl, options);
 
     client.on('connect', () => {
-    client.publish('move/start/12345', '1,url,userId');
+    client.publish(topic, message);
     client.end();
     })
 }
