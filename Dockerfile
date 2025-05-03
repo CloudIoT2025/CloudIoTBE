@@ -10,4 +10,5 @@ FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder /app .
 EXPOSE 8080
+EXPOSE 1883
 CMD ["sh", "-c", "npm run broker & npm start"]
