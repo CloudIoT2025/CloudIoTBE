@@ -68,9 +68,8 @@ router.post('/rsp/validate', async (req, res) => {
 
   await responseClientCheck.then((message) => {
     console.log('response/clientCheck/rsp:', message);
-    const data = message.split(',');
-    const valid = data[0] == 1 ? true : false;
-    res.json({ valid });
+    const valid = message == 1 ? true : false;
+    res.json({ valid , rspid:code });
   }
   ).catch((err) => {
     console.error('에러 발생:', err);
