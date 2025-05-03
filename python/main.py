@@ -127,7 +127,7 @@ async def detect_pose(client,data,rsp_id):
     live_times = []
     results    = []  # (time_ms, ok_flag) 기록
 
-    result = client.publish('response/move/start/'+rsp_id, '1,'+userId, qos=2)
+    result = client.publish('response/move/start/'+rsp_id, '1,'+userId, qos=1)
     if result.rc != mqtt_client.MQTT_ERR_SUCCESS:
         logger.error(f"❌ Publish failed (response): rc={result.rc}")
 
@@ -205,7 +205,7 @@ async def detect_pose(client,data,rsp_id):
           f"스무딩 적용된 수행 비율: {ratio:.2%}")
 
 
-    result = client.publish(f'move/end/'+rsp_id, str(round(cal * ratio/100, 2))+','+userId, qos=2)
+    result = client.publish(f'move/end/'+rsp_id, str(round(cal * ratio/100, 2))+','+userId, qos=1)
     if result.rc != mqtt_client.MQTT_ERR_SUCCESS:
         logger.error(f"❌ Publish failed (response): rc={result.rc}")
 
@@ -256,7 +256,7 @@ def on_message(client, userdata, msg):
             asyncio.run_coroutine_threadsafe(detect_pose(client,data,RSPID), async_loop)
         else:
             logger.info("💡 Async test already running, skipping...")
-            result = client.publish(f'response/{msg.topic}', 0, qos=2)
+            result = client.publish(f'response/{msg.topic}', 0, qos=1, retain=True)
             if result.rc != mqtt_client.MQTT_ERR_SUCCESS:
                 logger.error(f"❌ Publish failed (response): rc={result.rc}")
 
