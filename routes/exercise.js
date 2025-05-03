@@ -66,7 +66,7 @@ router.get('/end', async (req, res) => {
     else if (videoId == 3) { calroies = 150}
 
     // TODO : 운동 결과를 라즈베리파이에서 가져옴
-    const ex_calroies = parseInt((await waitForMqttMessage('move/end/'+code, { qos: 0 })).split(',')[0],10)
+    const ex_calroies = parseInt((await waitForMqttMessage('move/end/'+code,timeoutMs = 10000)).split(',')[0],10)
     const goal_calroies = calroies
     res.json({ burned: ex_calroies, goal: goal_calroies });
   } catch (err) {
