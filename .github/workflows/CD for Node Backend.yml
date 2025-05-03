@@ -45,6 +45,7 @@ jobs:
               -p 1883:1883 \
               -e NODE_ENV=production \
               -e PORT=8080 \
+              -e PORT=1883 \
               -e DB_HOST=${{ secrets.DB_HOST }} \
               -e DB_PORT=${{ secrets.DB_PORT }} \
               -e DB_USER=${{ secrets.DB_USER }} \
