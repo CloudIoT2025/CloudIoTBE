@@ -3,11 +3,11 @@ const router = express.Router();
 const pool = require('../db');
 
 // 운동 시작
-router.get('/start', async (req, res) => {
-  const { videoId } = req.query;
+router.post('/start', async (req, res) => {
+  const { videoId, rspId } = req.body;
 
   try {
-    console.log(`🚀 운동 시작: videoId=${videoId}`);
+    console.log(`[운동 시작] Video ID: ${videoId}, Rsp ID: ${rspId}`);
 
     try {
       const [rows] = await pool.query(
