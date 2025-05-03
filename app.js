@@ -6,6 +6,7 @@ const fitbitRoutes = require('./routes/fitbitRoutes');
 const userRoutes = require('./routes/user');
 const exerciseRoutes = require('./routes/exercise');
 const apiRoutes = require('./routes/apiRoutes');
+require('./mqtt/broker');
 
 const app = express();
 app.use(cors({
