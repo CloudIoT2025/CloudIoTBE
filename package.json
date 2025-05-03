@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "broker": "node mqtt/broker.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "mysql2": "^3.14.1"
+    "mysql2": "^3.14.1",
+    "aedes": "^0.51.3",
+    "mqtt": "^5.12.0"
+
   }
 }

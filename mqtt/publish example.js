@@ -2,7 +2,7 @@ const mqtt = require('mqtt');
 
 // 클라이언트 ID 지정
 const options = {
-  clientId: 'nodejs-publisher-',
+  clientId: 'nodejs-publisher-' + Math.random().toString(16).substr(2, 8), // 랜덤 ID 부여
 };
 
 const client = mqtt.connect('mqtt://localhost:1883', options);

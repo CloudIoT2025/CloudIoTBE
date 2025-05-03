@@ -21,7 +21,27 @@ router.post('/start', async (req, res) => {
       }
 
       const s3DataId = rows[0].id;
+      const s3DataUrl = rows[0].s3url;
       // TODO: 운동 시작 시 s3DataId를 라즈베리파이로 넘겨줌
+
+      const userId = '1746278561833'; // TODO: 실제 사용자 ID로 변경 필요
+
+      responseClientCheck=waitForMqttMessage('response/move/start/'+rspId, { qos: 0 })
+    
+      sendMqttMessage('move/start/'+rspId, `${s3DataId},${s3DataUrl},${userId}`)
+    
+      await responseClientCheck.then((message) => {
+        console.log('response/move/start/'+rspId, message);
+        const data = message.split(',');
+        const valid = data[0] == 1 ? true : false;
+        res.json({ valid });
+      }
+      ).catch((err) => {
+        console.error('에러 발생:', err);
+        res.status(500).json({ error: '서버 오류' });
+      });
+
+
 
     } catch (err) {
       console.error('영상 정보 조회 실패:', err);
@@ -46,7 +66,7 @@ router.get('/end', async (req, res) => {
     else if (videoId == 3) { calroies = 150}
 
     // TODO : 운동 결과를 라즈베리파이에서 가져옴
-    const ex_calroies = 5
+    const ex_calroies = parseInt((await waitForMqttMessage('move/end/'+code, { qos: 0 })).split(',')[0],10)
     const goal_calroies = calroies
     res.json({ burned: ex_calroies, goal: goal_calroies });
   } catch (err) {
