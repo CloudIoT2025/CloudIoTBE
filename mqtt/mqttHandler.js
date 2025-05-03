@@ -1,53 +1,45 @@
 const mqtt = require('mqtt');
 
-// MQTT 브로커 주소 (예: localhost, 포트 1883)
 const brokerUrl = 'mqtt://localhost:1883';
 
-// 옵션 (필요시)
-const options = {
-    clientId: 'nodejs-client-' + Math.random().toString(16).substr(2, 8),
-    clean: true,
-    connectTimeout: 4000,
-    // username: 'user', // 필요시
-    // password: 'pass', // 필요시
-};
+async function waitForMqttMessage(topic) {
+    const options = {
+    clientId: 'nodejs-subscriber' + Math.random().toString(16).substr(2, 8), // 랜덤 ID 부여
+    };
+  const client = mqtt.connect(brokerUrl, options);
 
-// 클라이언트 생성 및 연결
-const client = mqtt.connect(brokerUrl, options);
-
-// 연결 이벤트
-client.on('connect', () => {
-    console.log('MQTT 연결 성공');
-    // 예시: 특정 토픽 구독
-    client.subscribe('test/topic', (err) => {
-        if (!err) {
-            console.log('test/topic 구독 성공');
-        }
+  return new Promise((resolve, reject) => {
+    client.on('connect', () => {
+      client.subscribe(topic, (err) => {
+        if (err) reject(err);
+      });
     });
-});
 
-// 메시지 수신 이벤트
-client.on('message', (topic, message) => {
-    console.log(`수신: [${topic}] ${message.toString()}`);
-    // 여기서 메시지 처리 로직 작성
-});
-
-// 에러 이벤트
-client.on('error', (err) => {
-    console.error('MQTT 에러:', err);
-});
-
-// publish 함수 (외부에서 사용 가능)
-function publish(topic, msg) {
-    client.publish(topic, msg, (err) => {
-        if (err) {
-            console.error('메시지 발행 실패:', err);
-        }
+    client.on('message', (recvTopic, payload) => {
+      if (recvTopic === topic) {
+        // payload는 Buffer
+        const msg = payload.toString();
+        client.end();        // 더 이상 필요 없다면 연결 종료
+        resolve(msg);        // 여기서 프로미스가 풀리면서 다음 줄로 진행
+      }
     });
+
+    client.on('error', (err) => {
+      client.end();
+      reject(err);
+    });
+  });
 }
 
-// 모듈로 export
-module.exports = {
-    client,
-    publish,
-};
+function sendMqttMessage(topic, message) {
+    const options = {
+    clientId: 'nodejs-publisher-' + Math.random().toString(16).substr(2, 8), // 랜덤 ID 부여
+    };
+
+    const client = mqtt.connect(brokerUrl, options);
+
+    client.on('connect', () => {
+    client.publish('move/start/12345', '1,url,userId');
+    client.end();
+    })
+}

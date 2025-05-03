@@ -64,6 +64,7 @@ client.on('message', (topic, message) => {
       // data = 1,rspId or 0,rspId
       console.log(`response/clientCheck/rsp:`, data);
       // 클라이언트 체크 응답 처리
+      
     }
 
 
