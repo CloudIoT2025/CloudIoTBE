@@ -43,3 +43,8 @@ function sendMqttMessage(topic, message) {
     client.end();
     })
 }
+
+module.exports = {
+    sendMqttMessage,
+    waitForMqttMessage,
+  };
