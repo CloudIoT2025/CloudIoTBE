@@ -62,7 +62,7 @@ router.post('/rsp/validate', async (req, res) => {
   const { code } = req.body;
 
 
-  responseClientCheck=waitForMqttMessage('response/clientCheck/rsp', { qos: 0 })
+  responseClientCheck=waitForMqttMessage('response/clientCheck/'+code)
 
   sendMqttMessage('clientCheck/rsp', code)
 

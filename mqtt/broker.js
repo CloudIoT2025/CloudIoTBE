@@ -32,11 +32,11 @@ aedes.on('publish', (packet, client) => {
     if (clientList.has('rsp-'+rspid)) {
       console.log(`클라이언트 ${rspid} 연결되어있음`);
       // response/clientCheck/rsp 로 결과 전송
-      aedes.publish({ topic: 'response/clientCheck/rsp', payload: '1,'+rspid ,qos: 1});
+      aedes.publish({ topic: 'response/clientCheck/'+rspid, payload: '1',qos: 1});
     } else {
       console.log(`클라이언트 ${rspid} 연결되어있지 않음`);
       // response/clientCheck/rsp 로 결과 전송
-      aedes.publish({ topic: 'response/clientCheck/rsp', payload: '0,'+rspid,qos: 1});
+      aedes.publish({ topic: 'response/clientCheck/'+rspid, payload: '0',qos: 1});
     }
     
   }
