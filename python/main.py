@@ -204,8 +204,7 @@ async def detect_pose(client,data,rsp_id):
     print(f"\n초반 {WARMUP_MS/1000:.1f}초 제외 후, "
           f"스무딩 적용된 수행 비율: {ratio:.2%}")
 
-
-    result = client.publish(f'move/end/'+rsp_id, str(round(cal * ratio/100, 2))+','+userId, qos=1)
+    result = client.publish(f'move/end/'+rsp_id, str(cal * ratio)+','+userId, qos=1)
     if result.rc != mqtt_client.MQTT_ERR_SUCCESS:
         logger.error(f"❌ Publish failed (response): rc={result.rc}")
 
