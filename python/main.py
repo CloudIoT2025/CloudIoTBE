@@ -127,7 +127,7 @@ async def detect_pose(client,data,rsp_id):
     live_times = []
     results    = []  # (time_ms, ok_flag) 기록
 
-    result = client.publish('response/move/start/'+rsp_id, '1,', qos=1)
+    result = client.publish('response/move/start/'+rsp_id, '1', qos=1)
     if result.rc != mqtt_client.MQTT_ERR_SUCCESS:
         logger.error(f"❌ Publish failed (response): rc={result.rc}")
 
