@@ -1,9 +1,8 @@
 name: Docker CI/CD
 
-# on:
-#   push:
-#     branches: [master]
-on: []
+on:
+  push:
+    branches: [master]
 
 jobs:
   deploy:
