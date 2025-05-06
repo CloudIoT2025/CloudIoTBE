@@ -8,7 +8,7 @@ const options = {
 const client = mqtt.connect('mqtt://localhost:1883', options);
 
 client.on('connect', () => {
-  client.publish('move/start/12345', '1,url,userId');  // 1번 운동 시작
+  client.publish('move/start/12345', '1,url,userId'); // 1번 운동 시작
   // client.publish('move/start/12345', '2,url');  // 2번 운동 시작
   // client.publish('move/start/12345', '3,url');  // 3번 운동 시작
   // client.publish('move/end/12345', '0.92');

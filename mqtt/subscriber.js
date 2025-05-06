@@ -6,14 +6,18 @@ const options = {
   clientId: `nodejs-subscriber-${Math.random().toString(16).substr(2, 8)}`, // 랜덤 ID 부여
   clean: true,
   connectTimeout: 4000,
-  reconnectPeriod: 1000,  // 2초마다 자동 재연결 시도
+  reconnectPeriod: 1000, // 2초마다 자동 재연결 시도
   // username: 'user',
   // password: 'password'
 };
 
 const client = mqtt.connect(brokerUrl, options);
 
-const TOPICS = ['response/move/start/#', 'move/end/#', 'response/clientCheck/rsp'];
+const TOPICS = [
+  'response/move/start/#',
+  'move/end/#',
+  'response/clientCheck/rsp',
+];
 
 client.on('connect', () => {
   console.log(`[${new Date().toISOString()}] ▶ 브로커에 연결됨`);
@@ -52,22 +56,16 @@ client.on('message', (topic, message) => {
       const rsp_id = topic.split('/')[3];
       console.log(`response for ${rsp_id}:`, data);
       // 운동시작 응답 처리 로직
-
     } else if (topic.startsWith('move/end/')) {
       // data = 칼로리, userId
       const rsp_id = topic.split('/')[3];
       console.log(`Move end for ${rsp_id}:`, data);
       // DB에 운동 칼로리 저장 로직
-
-
     } else if (topic === 'response/clientCheck/rsp') {
       // data = 1,rspId or 0,rspId
       console.log(`response/clientCheck/rsp:`, data);
       // 클라이언트 체크 응답 처리
-      
     }
-
-
   } catch (e) {
     console.log(`Received on ${topic}:`, message.toString());
   }

@@ -4,7 +4,14 @@ const net = require('net');
 
 const PORT = 1883;
 const server = net.createServer(aedes.handle);
-const topicLogs = ['move/start/','response/move/start/','client/','move/end/'];
+const topicLogs = [
+  'move/start/',
+  'response/move/start/',
+  'client/',
+  'move/end/',
+  'response/move/end/',
+  'response/clientCheck/',
+];
 
 const clientList = new Set();
 
@@ -19,6 +26,7 @@ aedes.on('publish', (packet, client) => {
   if (topicLogs.some(topic => packet.topic.startsWith(topic))) {
     console.log(`📡 ${sender} → ${packet.topic}: ${packet.payload.toString()}`);
   }
+
   // console.log(`[${new Date().toISOString()}] ${sender} → ${packet.topic}: ${packet.payload.toString()}`);
   // 2) 특정 토픽에 대한 별도 처리
   if (packet.topic === 'commands/restart') {
@@ -27,18 +35,27 @@ aedes.on('publish', (packet, client) => {
   }
 
   if (packet.topic === 'clientCheck/rsp') {
-    rspid = packet.payload.toString()
+    rspid = packet.payload.toString();
     // 연결된 클라이언트중에 rspid와 같은 id를 가진 클라이언트가 있는지 확인
-    if (clientList.has('rsp-'+rspid)) {
+    if (clientList.has('rsp-' + rspid)) {
       console.log(`클라이언트 ${rspid} 연결되어있음`);
       // response/clientCheck/rsp 로 결과 전송
-      aedes.publish({ topic: 'response/clientCheck/'+rspid, payload: '1',qos: 1,retain: true});
+      aedes.publish({
+        topic: `response/clientCheck/${rspid}`,
+        payload: '1',
+        qos: 1,
+        retain: true,
+      });
     } else {
       console.log(`클라이언트 ${rspid} 연결되어있지 않음`);
       // response/clientCheck/rsp 로 결과 전송
-      aedes.publish({ topic: 'response/clientCheck/'+rspid, payload: '0',qos: 1,retain: true});
+      aedes.publish({
+        topic: `response/clientCheck/${rspid}`,
+        payload: '0',
+        qos: 1,
+        retain: true,
+      });
     }
-    
   }
 });
 
@@ -46,7 +63,9 @@ aedes.on('publish', (packet, client) => {
 aedes.on('subscribe', (subscriptions, client) => {
   subscriptions.forEach(sub => {
     if (sub.topic === 'alerts/#') {
-      console.log(`🔔 ALERT 구독: ${client.id}님이 ${sub.topic}을(를) 구독했습니다.`);
+      console.log(
+        `🔔 ALERT 구독: ${client.id}님이 ${sub.topic}을(를) 구독했습니다.`
+      );
       // 필요시 별도 초기화 로직 등 수행
       initAlertSessionFor(client.id);
     }
@@ -58,6 +77,7 @@ aedes.on('client', client => {
   console.log(`클라이언트 연결: ${client.id}`);
   clientList.add(client.id);
 });
+
 aedes.on('clientDisconnect', client => {
   console.log(`클라이언트 해제: ${client.id}`);
   clientList.delete(client.id);
