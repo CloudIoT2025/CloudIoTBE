@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-
+const mqtt = require('mqtt');
+const { waitForMqttMessage, sendMqttMessage } = require('../mqtt/mqttHandler');
 // 유저 정보 조회
 router.get('/', async (req, res) => {
   try {
@@ -21,8 +22,9 @@ router.get('/today', async (req, res) => {
       FROM fitbit_data AS f 
       JOIN users AS u 
       ON f.user_id = u.id
-      WHERE date = ?
-      ORDER BY created_at DESC LIMIT 1`, [today]);
+      WHERE f.date = ? 
+      AND f.user_id = 1746278561833 
+      ORDER BY f.created_at DESC LIMIT 1`, [today]);
     res.status(201).json(rows[0]);
   } catch (err) {
     res.status(400).json({ status: 400, message: "결제취소가 실패하였습니다." });
@@ -55,4 +57,35 @@ router.get('/weekly', async (req, res) => {
   }
 });
 
+// 라즈베리파이 아이디 확인
+router.post('/rsp/validate', async (req, res) => {
+  const { code } = req.body;
+
+
+  responseClientCheck=waitForMqttMessage('response/clientCheck/'+code)
+
+  sendMqttMessage('clientCheck/rsp', code)
+
+  await responseClientCheck.then((message) => {
+    console.log('response/clientCheck/rsp:', message);
+    const valid = message == 1 ? true : false;
+    res.json({ valid , rspid:code });
+  }
+  ).catch((err) => {
+    console.error('에러 발생:', err);
+    res.status(500).json({ error: '서버 오류' });
+  });
+
+  // try {
+  //   // TODO: 라즈베리 파이 아이디 확인하는 부분
+  //   const rspId = "0"
+  //   const valid = rspId == code;
+
+  //   res.json({ valid });
+  // } catch (err) {
+  //   console.error('라즈베리 코드 확인 오류:', err);
+  //   res.status(500).json({ error: '서버 오류' });
+  // }
+
+});
 module.exports = router;
