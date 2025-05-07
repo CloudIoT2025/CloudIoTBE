@@ -157,9 +157,9 @@ router.post('/rsp/validate', async (req, res) => {
   try {
     const result = waitForMqttMessage(`response/clientCheck/${code}`);
     sendMqttMessage('clientCheck/rsp', code);
-    result.then((result) => {
-      console.log(`response/clientCheck/${code}: ${result}`);
-      const valid = result === '1' ? true : false;
+    result.then((message) => {
+      console.log(`response/clientCheck/${code}: ${message}`);
+      const valid = message === '1' ? true : false;
       res.status(200).json({ valid, rspId: code });
     }).catch((error) => {
       console.error('Error waiting for MQTT message:', error);

@@ -41,9 +41,9 @@ router.get('/start', async (req, res) => {
       `${s3DataId},${s3DataUrl},${userId}`
     );
 
-    result.then((data) => {
-      console.log(`/response/move/start/${rspId}: ${result}`);
-      const data = result.trim();
+    result.then((message) => {
+      console.log(`/response/move/start/${rspId}: ${message}`);
+      const data = message.trim();
       const valid = data === '1' ? true : false;
       if (valid) {
         // 운동 시작 가능 상태
