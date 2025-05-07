@@ -33,13 +33,15 @@ router.get('/start', async (req, res) => {
     const s3DataId = rows[0].id;
     const s3DataUrl = rows[0].s3url;
     // TODO: 운동 시작 시 s3DataId를 라즈베리파이로 넘겨줌
-
+    
+    const result = await waitForMqttMessage(`response/move/start/${rspId}`);
+    
     sendMqttMessage(
       `move/start/${rspId}`,
       `${s3DataId},${s3DataUrl},${userId}`
     );
 
-    const result = await waitForMqttMessage(`response/move/start/${rspId}`);
+    await result;
     console.log(`/response/move/start/${rspId}: ${result}`);
     const data = result.trim();
     const valid = data === '1' ? true : false;

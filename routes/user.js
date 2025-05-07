@@ -153,10 +153,11 @@ router.get('/weekly', async (req, res) => {
 // 라즈베리파이 아이디 확인
 router.post('/rsp/validate', async (req, res) => {
   const { code } = req.body;
-  sendMqttMessage('clientCheck/rsp', code);
 
   try {
-    const result = await waitForMqttMessage(`response/clientCheck/${code}`);
+    const result = waitForMqttMessage(`response/clientCheck/${code}`);
+    sendMqttMessage('clientCheck/rsp', code);
+    await result
     console.log(`response/clientCheck/${code}: ${result}`);
     const valid = result === '1' ? true : false;
     res.status(200).json({ valid, rspId: code });
