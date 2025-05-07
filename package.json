@@ -1,8 +1,32 @@
 {
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "devstart": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "broker": "node mqtt/broker.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CloudIoT2025/backend.git"
+  },
+  "private": true,
   "dependencies": {
+    "aedes": "^0.51.3",
+    "axios": "^1.9.0",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "luxon": "^3.6.1",
+    "mqtt": "^5.12.0",
     "mysql2": "^3.14.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
