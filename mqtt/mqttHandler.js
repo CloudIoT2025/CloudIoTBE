@@ -7,7 +7,7 @@ const brokerUrl =
 async function waitForMqttMessage(topic, timeoutMs = 30000) {
   const options = {
     clientId: 'nodejs-subscriber-' + Math.random().toString(16).substr(2, 8),
-    clean: true,
+    clean: false,
   };
   const client = mqtt.connect(brokerUrl, options);
 
