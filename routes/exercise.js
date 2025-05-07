@@ -34,30 +34,32 @@ router.get('/start', async (req, res) => {
     const s3DataUrl = rows[0].s3url;
     // TODO: 운동 시작 시 s3DataId를 라즈베리파이로 넘겨줌
     
-    const result = await waitForMqttMessage(`response/move/start/${rspId}`);
+    const result = waitForMqttMessage(`response/move/start/${rspId}`);
     
     sendMqttMessage(
       `move/start/${rspId}`,
       `${s3DataId},${s3DataUrl},${userId}`
     );
 
-    await result;
-    console.log(`/response/move/start/${rspId}: ${result}`);
-    const data = result.trim();
-    const valid = data === '1' ? true : false;
-
-    if (valid) {
-      // 운동 시작 가능 상태
-      return res
-        .status(200)
-        .json({ message: '운동이 시작되었습니다.', videoId });
-    } else {
-      // 라즈베리파이 사용중(e.g. 다른 운동 중) 이라 운동 시작 불가능 상태
-      return res.status(400).json({
-        message:
-          '다른 운동 중 등의 이유로 사용중이기 때문에 현재 운동을 시작할 수 없습니다',
-      });
-    }
+    result.then((data) => {
+      console.log(`/response/move/start/${rspId}: ${result}`);
+      const data = result.trim();
+      const valid = data === '1' ? true : false;
+      if (valid) {
+        // 운동 시작 가능 상태
+        return res
+          .status(200)
+          .json({ message: '운동이 시작되었습니다.', videoId });
+      } else {
+        // 라즈베리파이 사용중(e.g. 다른 운동 중) 이라 운동 시작 불가능 상태
+        return res.status(400).json({
+          message:
+            '다른 운동 중 등의 이유로 사용중이기 때문에 현재 운동을 시작할 수 없습니다',
+        });
+      }
+    }).catch((err) => {
+      console.error(`운동 시작 응답 대기 중 오류: ${err}`);
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).send({ detail: err.message });

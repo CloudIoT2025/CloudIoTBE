@@ -157,10 +157,14 @@ router.post('/rsp/validate', async (req, res) => {
   try {
     const result = waitForMqttMessage(`response/clientCheck/${code}`);
     sendMqttMessage('clientCheck/rsp', code);
-    await result
-    console.log(`response/clientCheck/${code}: ${result}`);
-    const valid = result === '1' ? true : false;
-    res.status(200).json({ valid, rspId: code });
+    result.then((result) => {
+      console.log(`response/clientCheck/${code}: ${result}`);
+      const valid = result === '1' ? true : false;
+      res.status(200).json({ valid, rspId: code });
+    }).catch((error) => {
+      console.error('Error waiting for MQTT message:', error);
+      res.status(500).json({ error: '서버 오류' });
+    });
   } catch (error) {
     console.error('라즈베리 코드 확인 오류:', error);
     res.status(500).json({ error: '서버 오류' });
