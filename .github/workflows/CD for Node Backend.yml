@@ -55,4 +55,7 @@ jobs:
               -e FITBIT_CLIENT_SECRET=${{ secrets.FITBIT_CLIENT_SECRET }} \
               -e FITBIT_REDIRECT_URI=${{ secrets.FITBIT_REDIRECT_URI }} \
               -e FITBIT_SCOPE="${{ secrets.FITBIT_SCOPE }}" \
+              -e FRONT_URL=${{ secrets.FRONT_URL }} \
+              -e PORT=${{ secrets.PORT }} \
+              -e NODE_ENV=${{ secrets.NODE_ENV }} \
               ${{ secrets.DOCKERHUB_USERNAME }}/cloudiot-node:latest
